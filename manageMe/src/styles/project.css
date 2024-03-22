@@ -1,0 +1,62 @@
+#app{
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: 5px;
+  gap: 10px;
+  max-width: 50%;
+}
+
+input{
+  height: 40px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust width as needed */
+  gap: 20px;
+}
+
+.projects div {
+  padding: 10px;
+}
+
+
+.projects span{
+  padding: 7px;
+  margin-left: 10px;
+}
+
+#search_project{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+#project_search{
+  width: 100%;
+}
+
+.delete-project-button {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(218, 185, 185);
+}
+
+
+.project-list{
+  display: flex;
+  align-items: center;
+}

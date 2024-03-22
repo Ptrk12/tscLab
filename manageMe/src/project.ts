@@ -28,17 +28,61 @@ export function setUpProject(element: HTMLButtonElement) {
   });
 }
 
+
+export function getById(callback: (project: projectType | null) => void): void {
+  const projectIdInput = document.querySelector<HTMLInputElement>('#project_search');
+  
+  if (projectIdInput != null) {
+    document.querySelector<HTMLFormElement>('#search_project')!.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const foundProject = localStrgWorker.getById(projectIdInput.value);
+
+      // Clear previous search result
+      const previousResult = document.querySelector('.projects');
+      if (previousResult) {
+        previousResult.remove();
+      }
+
+      console.log(foundProject);
+      callback(foundProject ? foundProject : null);
+    });
+  } else {
+    callback(null);
+  }
+}
+
+
 export function renderProjectList() {
   const projects = localStrgWorker.getAllItems();
+  event
   console.log(projects);
   const projectListContainer = document.createElement('div');
+  projectListContainer.classList.add('projects');
 
-  projects.forEach(project => {
-    const projectElement = document.createElement('div');
-    const span = document.createElement('span')
-    span.innerHTML = `ID: ${project.id}, Name: ${project.name}, Description: ${project.description}`;
-    projectElement.appendChild(span);
-    projectListContainer.appendChild(projectElement);
+  let currentColumn: HTMLDivElement | null = null;
+
+  projects.forEach((project, index) => {
+    if (index % 2 === 0) {
+      currentColumn = document.createElement('div');
+      projectListContainer.appendChild(currentColumn);
+    }
+
+    if (currentColumn) {
+      const projectElement = document.createElement('div');
+      projectElement.classList.add('project-list');
+      const deleteButton = document.createElement('button');
+      deleteButton.type = 'submit';
+      deleteButton.innerText = 'X';
+      deleteButton.classList.add('delete-project-button')
+      deleteButton.addEventListener('click', function () {
+        deleteProject(project.id);
+      });
+      const span = document.createElement('span');
+      span.innerHTML = `ID: ${project.id}, Name: ${project.name}, Description: ${project.description}`;
+      projectElement.appendChild(span);
+      projectElement.appendChild(deleteButton);
+      currentColumn.appendChild(projectElement);
+    }
   });
 
   const appContainer = document.querySelector<HTMLDivElement>('#app');
@@ -47,4 +91,33 @@ export function renderProjectList() {
   }
 }
 
-renderProjectList();
+export function renderProject(project: projectType) {
+  const searchForm = document.querySelector<HTMLFormElement>('#search_project');
+  if (searchForm) {
+    const projectListContainer = document.createElement('div');
+    projectListContainer.classList.add('projects');
+
+    const projectElement = document.createElement('div');
+    projectElement.classList.add('project-list');
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'submit';
+    deleteButton.innerText = 'X';
+    deleteButton.classList.add('delete-project-button')
+    deleteButton.addEventListener('click', function () {
+      deleteProject(project.id);
+    });
+    const span = document.createElement('span');
+    span.innerHTML = `ID: ${project.id}, Name: ${project.name}, Description: ${project.description}`;
+    projectElement.appendChild(span);
+    projectElement.appendChild(deleteButton);
+    projectListContainer.appendChild(projectElement);
+
+    searchForm.insertAdjacentElement('afterend', projectListContainer);
+  }
+}
+
+function deleteProject(key: string) {
+  localStrgWorker.delete(key);
+  location.reload();
+}
+
